@@ -1,5 +1,13 @@
 import * as React from "react";
-import { Button, Flex, Input, Stack, Text, useMediaQuery, useToast } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Input,
+  Stack,
+  Text,
+  useMediaQuery,
+  useToast,
+} from "@chakra-ui/react";
 import { URL_Cities, URL_Countries } from "constants/urls";
 import UseRequestData from "hooks/UseRequestData";
 import { FormStyled, SelectReact } from "./styles";
@@ -22,20 +30,25 @@ const Home = () => {
     cities: [],
   });
   const toast = useToast();
-  const [smallWidth] = useMediaQuery('(min-width: 750px)')
+  const [smallWidth] = useMediaQuery("(min-width: 750px)");
 
-  
   React.useEffect(() => {
     form.countries = countriesForm;
     form.cities = citiesForm;
   });
 
- // função para enviar o formulário, o 'setTimeout' é para aguardar enquanto o 'tost' está na tela
+  // função para enviar o formulário, o 'setTimeout' é para aguardar enquanto o 'tost' está na tela
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setCountriesForm([]);
     setCitiesForm([]);
-
+    toast({
+      title: "Sucesso.",
+      description: "Seu formulário foi enviado com sucesso",
+      status: "success",
+      duration: 1500,
+      isClosable: false,
+    });
     setTimeout(() => {
       clearFields();
       window.location.reload();
@@ -47,12 +60,17 @@ const Home = () => {
       <Flex
         w="100%"
         h="40%"
-        flexDirection={smallWidth? "row" : "column"}
+        flexDirection={smallWidth ? "row" : "column"}
         justifyContent="space-evenly"
-        alignItems={smallWidth? "flex-start": "center"}
+        alignItems={smallWidth ? "flex-start" : "center"}
         gap={2}
       >
-        <Stack spacing={4} display="flex" align="center" w={smallWidth? "35%": "90%"}>
+        <Stack
+          spacing={4}
+          display="flex"
+          align="center"
+          w={smallWidth ? "35%" : "90%"}
+        >
           <Text as="b" color="white">
             Dados pessoais
           </Text>
@@ -106,7 +124,12 @@ const Home = () => {
           />
         </Stack>
 
-        <Stack spacing={4} display="flex" align="center"  w={smallWidth? "35%": "90%"}>
+        <Stack
+          spacing={4}
+          display="flex"
+          align="center"
+          w={smallWidth ? "35%" : "90%"}
+        >
           <Text as="b" color="white">
             Destinos de interesses
           </Text>
@@ -139,15 +162,6 @@ const Home = () => {
         color="white"
         _hover={{ bg: "yellow700" }}
         _active={{ bg: "yellow400", borderColor: "yellow400" }}
-        onClick={() =>
-          toast({
-            title: "Sucesso.",
-            description: "Seu formulário foi enviado com sucesso",
-            status: "success",
-            duration: 1500,
-            isClosable: false,
-          })
-        }
       >
         Enviar
       </Button>
