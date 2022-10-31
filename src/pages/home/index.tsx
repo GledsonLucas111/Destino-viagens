@@ -31,7 +31,6 @@ const Home = () => {
   const [smallWidth] = useMediaQuery("(min-width: 750px)");
 
 
-
   // função para enviar o formulário, o 'setTimeout' é para aguardar enquanto o 'tost' está na tela
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
