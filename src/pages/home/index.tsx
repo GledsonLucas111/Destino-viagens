@@ -19,8 +19,6 @@ const animatedComponents = makeAnimated();
 const Home = () => {
   const [countries] = UseRequestData(`${URL_Countries}`);
   const [cities] = UseRequestData(`${URL_Cities}`);
-  const [countriesForm, setCountriesForm] = React.useState([]);
-  const [citiesForm, setCitiesForm] = React.useState([]);
   const { form, onChange, clearFields } = UseForm({
     name: "",
     email: "",
@@ -32,16 +30,11 @@ const Home = () => {
   const toast = useToast();
   const [smallWidth] = useMediaQuery("(min-width: 750px)");
 
-  React.useEffect(() => {
-    form.countries = countriesForm;
-    form.cities = citiesForm;
-  });
+
 
   // função para enviar o formulário, o 'setTimeout' é para aguardar enquanto o 'tost' está na tela
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setCountriesForm([]);
-    setCitiesForm([]);
     toast({
       title: "Sucesso.",
       description: "Seu formulário foi enviado com sucesso",
@@ -50,8 +43,8 @@ const Home = () => {
       isClosable: false,
     });
     setTimeout(() => {
-      clearFields();
-      window.location.reload();
+      clearFields()
+      window.location.reload()
     }, 2000);
   };
 
@@ -140,7 +133,7 @@ const Home = () => {
               }
             )}
             isMulti
-            onChange={(item: any) => setCountriesForm(item)}
+            onChange={(item: any) => form.countries = item}
             components={animatedComponents}
           />
           <SelectReact
@@ -150,7 +143,7 @@ const Home = () => {
               }
             )}
             isMulti
-            onChange={(item: any) => setCitiesForm(item)}
+            onChange={(item: any) => form.cities = item}
             components={animatedComponents}
           />
         </Stack>
