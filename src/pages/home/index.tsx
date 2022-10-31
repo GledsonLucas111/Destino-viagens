@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { URL_Cities, URL_Countries } from "constants/urls";
 import UseRequestData from "hooks/UseRequestData";
-import { FormStyled, SelectReact } from "./styles";
+import { CustomRequired, FormStyled, SelectReact } from "./style";
 import UseForm from "hooks/useForm";
 import makeAnimated from "react-select/animated";
 
@@ -19,6 +19,8 @@ const animatedComponents = makeAnimated();
 const Home = () => {
   const [countries] = UseRequestData(`${URL_Countries}`);
   const [cities] = UseRequestData(`${URL_Cities}`);
+  const [countriesForm, setCountriesForm] = React.useState([]);
+  const [citiesForm, setCitiesForm] = React.useState([]);
   const { form, onChange, clearFields } = UseForm({
     name: "",
     email: "",
@@ -29,10 +31,24 @@ const Home = () => {
   });
   const toast = useToast();
   const [smallWidth] = useMediaQuery("(min-width: 750px)");
+  const [requiredCountries, setRequiredCountries] = React.useState(true);
+  const [requiredCities, setRequiredCities] = React.useState(true);
 
+  React.useEffect(() => {
+    form.countries = countriesForm;
+    form.cities = citiesForm;
+    
+    countriesForm.length === 0
+      ? setRequiredCountries(true)
+      : setRequiredCountries(false);
+
+    citiesForm.length === 0
+      ? setRequiredCities(true)
+      : setRequiredCities(false);
+  }, [countriesForm, citiesForm, form]);
 
   // função para enviar o formulário, o 'setTimeout' é para aguardar enquanto o 'tost' está na tela
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     toast({
       title: "Sucesso.",
@@ -42,8 +58,8 @@ const Home = () => {
       isClosable: false,
     });
     setTimeout(() => {
-      clearFields()
-      window.location.reload()
+      clearFields();
+      window.location.reload();
     }, 2000);
   };
 
@@ -132,9 +148,16 @@ const Home = () => {
               }
             )}
             isMulti
-            onChange={(item: any) => form.countries = item}
+            onChange={(item: any) => setCountriesForm(item)}
             components={animatedComponents}
           />
+          {requiredCountries ? (
+            <CustomRequired>
+              <strong>!</strong> <p>Campo obrigatório.</p>
+            </CustomRequired>
+          ) : (
+            ""
+          )}
           <SelectReact
             options={cities.map(
               (city: { name_ptbr: string; country_code: string }) => {
@@ -142,14 +165,21 @@ const Home = () => {
               }
             )}
             isMulti
-            onChange={(item: any) => form.cities = item}
+            onChange={(item: any) => setCitiesForm(item)}
             components={animatedComponents}
           />
+          {requiredCities ? (
+            <CustomRequired>
+              <strong>!</strong> <p>Campo obrigatório.</p>
+            </CustomRequired>
+          ) : (
+            ""
+          )}
         </Stack>
       </Flex>
       <Button
         variant="outline"
-        type="submit"
+        type={requiredCities || requiredCountries ? "button" : "submit"}
         borderColor="yellow700"
         color="white"
         _hover={{ bg: "yellow700" }}
