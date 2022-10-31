@@ -1,7 +1,7 @@
 # Desafio - Destino Viagens 
 
 <h2 id="sobre">📓 Sobre </h2>
-Case desenvolvido no processo seletivo de uma empresa. .
+Case desenvolvido no processo seletivo de uma empresa.
  
 ## Inicializar projeto
 ```bash
