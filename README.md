@@ -8,6 +8,8 @@ Case desenvolvido no processo seletivo de uma empresa.
 # Install package
 $ npm install
 
+# Criar Build do projeto
+$ npm run build
 
 # Executar projeto
 $ npm start
