@@ -14,7 +14,7 @@ $ npm run build
 # Executar projeto
 $ npm start
 
-Abra [http://localhost:3000](http://localhost:3000) para visualizá-lo no navegador.
+Abra http://localhost:3000 para visualizá-lo no navegador.
 ```
  
 ## 🛠 Tecnologias
