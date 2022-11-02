@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Alert, AlertIcon } from "@chakra-ui/react";
+import Swal from "sweetalert2";
 
 const UseRequestData = (url: string) => {
   const [data, setData] = useState([]);
@@ -12,10 +12,17 @@ const UseRequestData = (url: string) => {
         setData(response.data);
       })
       .catch((e) => {
-        <Alert status="error">
-          <AlertIcon />
-          {e.message}
-        </Alert>;
+        Swal.fire({
+          position: "top-end",
+          icon: "error",
+          iconColor: "#fff",
+          background: "#dd1b35",
+          html: `<h3> ${e.message} </h3>`,
+          color: "#fff",
+          showConfirmButton: false,
+          timer: 1500,
+          toast: true,
+        });
       });
   }, [url]);
 

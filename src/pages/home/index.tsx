@@ -10,13 +10,20 @@ import {
   CustomStack,
 } from "./style";
 import UseForm from "hooks/useForm";
-import {
-  Button,
-  InputLabel,
-  MenuItem,
-  Typography,
-} from "@mui/material";
+import { Button, InputLabel, MenuItem, Typography } from "@mui/material";
 import Select from "@mui/material/Select";
+import Swal from "sweetalert2";
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 const Home = () => {
   const [countries] = UseRequestData(`${URL_Countries}`);
@@ -33,6 +40,17 @@ const Home = () => {
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     clearFields();
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      iconColor: "#fff",
+      background: "#35b468",
+      html: `<h3> Formulário enviado! </h3>`,
+      color: "#fff",
+      showConfirmButton: false,
+      timer: 2000,
+      toast: true,
+    });
   };
 
   return (
@@ -43,40 +61,44 @@ const Home = () => {
             Dados pessoais
           </Typography>
           <CustomInput
+            type="text"
             label="Nome"
             variant="filled"
-            name="name"
             size="small"
+            name="name"
             value={form.name}
             onChange={onChange}
             fullWidth
             required
           />
           <CustomInput
+            type="email"
             label="Email"
             variant="filled"
-            name="email"
             size="small"
+            name="email"
             value={form.email}
             onChange={onChange}
             fullWidth
             required
           />
           <CustomInput
+            type="number"
             label="Telefone"
             variant="filled"
-            name="tel"
             size="small"
+            name="tel"
             value={form.tel}
             onChange={onChange}
             fullWidth
             required
           />
           <CustomInput
+            type="number"
             label="CPF"
             variant="filled"
-            name="cpf"
             size="small"
+            name="cpf"
             value={form.cpf}
             onChange={onChange}
             fullWidth
@@ -88,36 +110,38 @@ const Home = () => {
           <Typography variant="h6" color="white">
             Destinos de interesses
           </Typography>
-          <CustomFormControl variant="filled" fullWidth required>
+          <CustomFormControl variant="filled" fullWidth>
             <InputLabel>Países</InputLabel>
             <Select
               name="countries"
               value={form.countries}
               onChange={onChange}
+              MenuProps={MenuProps}
               multiple
+              required
             >
-              {countries
-                .map((country: any) => {
-                  return (
-                    <MenuItem key={country.name_ptbr} value={country.name_ptbr}>
-                      {country.name_ptbr}
-                    </MenuItem>
-                  );
-                })
-                .slice(248)}
+              {countries.map((country: any) => {
+                return (
+                  <MenuItem key={country.code} value={country.name_ptbr}>
+                    {country.name_ptbr}
+                  </MenuItem>
+                );
+              })}
             </Select>
           </CustomFormControl>
-          <CustomFormControl variant="filled" fullWidth required>
+          <CustomFormControl variant="filled" fullWidth>
             <InputLabel>Cidades</InputLabel>
             <Select
               name="cities"
               value={form.cities}
               onChange={onChange}
+              MenuProps={MenuProps}
               multiple
+              required
             >
-              {cities.map((city: any) => {
+              {cities?.map((city: any) => {
                 return (
-                  <MenuItem key={city.code} value={city.name_ptbr}>
+                  <MenuItem key={city.id} value={city.name_ptbr}>
                     {city.name_ptbr}
                   </MenuItem>
                 );
