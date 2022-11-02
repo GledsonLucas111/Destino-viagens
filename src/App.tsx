@@ -1,12 +1,14 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import { ThemeProvider } from '@mui/material/styles';
 import Router from 'routes/Router';
 import { theme } from 'themes';
+import Global from 'themes/global';
 
 const App = () => {
   return (
-    <ChakraProvider theme={theme}>
+    <ThemeProvider theme={theme}>
       <Router />
-    </ChakraProvider>
+      <Global />
+    </ThemeProvider>
   );
 }
 

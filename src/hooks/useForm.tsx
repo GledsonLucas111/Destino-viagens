@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const UseForm = (initialState: any) => {
   const [form, setForm] = useState(initialState);
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = (event: any) => {
     const { name, value } = event.target;
     setForm({ ...form, [name]: value });
   };
