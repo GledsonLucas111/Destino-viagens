@@ -9,9 +9,9 @@ import {
   Flex,
   CustomStack,
 } from "./style";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import UseForm from "hooks/useForm";
 import { Button, InputLabel, MenuItem, Typography } from "@mui/material";
-import Select from "@mui/material/Select";
 import Swal from "sweetalert2";
 
 const ITEM_HEIGHT = 48;
@@ -28,14 +28,30 @@ const MenuProps = {
 const Home = () => {
   const [countries] = UseRequestData(`${URL_Countries}`);
   const [cities] = UseRequestData(`${URL_Cities}`);
+  const [countriesForm, setCountriesForm] = React.useState<string[]>([]);
+  const [citiesForm, setCitiesForm] = React.useState<string[]>([]);
   const { form, onChange, clearFields } = UseForm({
     name: "",
     email: "",
     tel: "",
     cpf: "",
     countries: [],
-    cities: [],
+    cities: [] ,
   });
+
+  React.useEffect(() => {
+    form.countries = countriesForm;
+    form.cities = citiesForm;
+  });
+
+  const handleChangeCountries = (event: SelectChangeEvent<typeof countriesForm>) => {
+    const { target: { value } } = event;
+    setCountriesForm(typeof value === "string" ? value.split(",") : value);
+  };
+  const handleChangeCities = (event: SelectChangeEvent<typeof countriesForm>) => {
+    const { target: { value } } = event;
+    setCitiesForm(typeof value === "string" ? value.split(",") : value);
+  };
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -51,8 +67,10 @@ const Home = () => {
       timer: 2000,
       toast: true,
     });
+    setCitiesForm([]);
+    setCountriesForm([]);
   };
-
+  
   return (
     <FormStyled onSubmit={submit}>
       <Flex gap={2}>
@@ -61,7 +79,6 @@ const Home = () => {
             Dados pessoais
           </Typography>
           <CustomInput
-            type="text"
             label="Nome"
             variant="filled"
             size="small"
@@ -72,7 +89,6 @@ const Home = () => {
             required
           />
           <CustomInput
-            type="email"
             label="Email"
             variant="filled"
             size="small"
@@ -83,7 +99,6 @@ const Home = () => {
             required
           />
           <CustomInput
-            type="number"
             label="Telefone"
             variant="filled"
             size="small"
@@ -94,7 +109,6 @@ const Home = () => {
             required
           />
           <CustomInput
-            type="number"
             label="CPF"
             variant="filled"
             size="small"
@@ -114,13 +128,13 @@ const Home = () => {
             <InputLabel>Países</InputLabel>
             <Select
               name="countries"
-              value={form.countries}
-              onChange={onChange}
+              value={countriesForm}
+              onChange={handleChangeCountries}
               MenuProps={MenuProps}
               multiple
               required
             >
-              {countries.map((country: any) => {
+              {countries.map((country: { code: string; name_ptbr: string }) => {
                 return (
                   <MenuItem key={country.code} value={country.name_ptbr}>
                     {country.name_ptbr}
@@ -133,13 +147,13 @@ const Home = () => {
             <InputLabel>Cidades</InputLabel>
             <Select
               name="cities"
-              value={form.cities}
-              onChange={onChange}
+              value={citiesForm}
+              onChange={handleChangeCities}
               MenuProps={MenuProps}
               multiple
               required
             >
-              {cities?.map((city: any) => {
+              {cities.map((city: { id: string; name_ptbr: string }) => {
                 return (
                   <MenuItem key={city.id} value={city.name_ptbr}>
                     {city.name_ptbr}
