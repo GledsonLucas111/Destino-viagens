@@ -1,190 +1,170 @@
 import * as React from "react";
-import {
-  Button,
-  Flex,
-  Input,
-  Stack,
-  Text,
-  useMediaQuery,
-  useToast,
-} from "@chakra-ui/react";
 import { URL_Cities, URL_Countries } from "constants/urls";
 import UseRequestData from "hooks/UseRequestData";
-import { CustomRequired, FormStyled, SelectReact } from "./style";
+import {
+  CustomInput,
+  CustomFormControl,
+  FormStyled,
+  sendButton,
+  Flex,
+  CustomStack,
+} from "./style";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import UseForm from "hooks/useForm";
-import makeAnimated from "react-select/animated";
+import { Button, InputLabel, MenuItem, Typography } from "@mui/material";
+import Swal from "sweetalert2";
 
-const animatedComponents = makeAnimated();
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 const Home = () => {
   const [countries] = UseRequestData(`${URL_Countries}`);
   const [cities] = UseRequestData(`${URL_Cities}`);
-  const [countriesForm, setCountriesForm] = React.useState([]);
-  const [citiesForm, setCitiesForm] = React.useState([]);
+  const [countriesForm, setCountriesForm] = React.useState<string[]>([]);
+  const [citiesForm, setCitiesForm] = React.useState<string[]>([]);
   const { form, onChange, clearFields } = UseForm({
     name: "",
     email: "",
     tel: "",
     cpf: "",
     countries: [],
-    cities: [],
+    cities: [] ,
   });
-  const toast = useToast();
-  const [smallWidth] = useMediaQuery("(min-width: 750px)");
-  const [requiredCountries, setRequiredCountries] = React.useState(true);
-  const [requiredCities, setRequiredCities] = React.useState(true);
 
   React.useEffect(() => {
     form.countries = countriesForm;
     form.cities = citiesForm;
-    
-    countriesForm.length === 0
-      ? setRequiredCountries(true)
-      : setRequiredCountries(false);
+  });
 
-    citiesForm.length === 0
-      ? setRequiredCities(true)
-      : setRequiredCities(false);
-  }, [countriesForm, citiesForm, form]);
-
-  // função para enviar o formulário, o 'setTimeout' é para aguardar enquanto o 'tost' está na tela
-  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    toast({
-      title: "Sucesso.",
-      description: "Seu formulário foi enviado com sucesso",
-      status: "success",
-      duration: 1500,
-      isClosable: false,
-    });
-    setTimeout(() => {
-      clearFields();
-      window.location.reload();
-    }, 2000);
+  const handleChangeCountries = (event: SelectChangeEvent<typeof countriesForm>) => {
+    const { target: { value } } = event;
+    setCountriesForm(typeof value === "string" ? value.split(",") : value);
+  };
+  const handleChangeCities = (event: SelectChangeEvent<typeof countriesForm>) => {
+    const { target: { value } } = event;
+    setCitiesForm(typeof value === "string" ? value.split(",") : value);
   };
 
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    clearFields();
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      iconColor: "#fff",
+      background: "#35b468",
+      html: `<h3> Formulário enviado! </h3>`,
+      color: "#fff",
+      showConfirmButton: false,
+      timer: 2000,
+      toast: true,
+    });
+    setCitiesForm([]);
+    setCountriesForm([]);
+  };
+  
   return (
     <FormStyled onSubmit={submit}>
-      <Flex
-        w="100%"
-        h="40%"
-        flexDirection={smallWidth ? "row" : "column"}
-        justifyContent="space-evenly"
-        alignItems={smallWidth ? "flex-start" : "center"}
-        gap={2}
-      >
-        <Stack
-          spacing={4}
-          display="flex"
-          align="center"
-          w={smallWidth ? "35%" : "90%"}
-        >
-          <Text as="b" color="white">
+      <Flex gap={2}>
+        <CustomStack spacing={2}>
+          <Typography variant="h6" color="white">
             Dados pessoais
-          </Text>
-          <Input
-            placeholder="Nome"
-            type="name"
+          </Typography>
+          <CustomInput
+            label="Nome"
+            variant="filled"
+            size="small"
             name="name"
             value={form.name}
             onChange={onChange}
-            variant="filled"
-            focusBorderColor="yellow700"
-            _focus={{ color: "white" }}
+            fullWidth
             required
           />
-          <Input
-            placeholder="Email"
-            type="email"
+          <CustomInput
+            label="Email"
+            variant="filled"
+            size="small"
             name="email"
             value={form.email}
             onChange={onChange}
-            variant="filled"
-            focusBorderColor="yellow700"
-            _focus={{ color: "white" }}
+            fullWidth
             required
           />
-          <Input
-            placeholder="Telefone"
-            type="tel"
+          <CustomInput
+            label="Telefone"
+            variant="filled"
+            size="small"
             name="tel"
             value={form.tel}
             onChange={onChange}
-            variant="filled"
-            focusBorderColor="yellow700"
-            _focus={{ color: "white" }}
-            title="Apenas no números neste campo"
-            maxLength={11}
+            fullWidth
             required
           />
-          <Input
-            placeholder="CPF"
+          <CustomInput
+            label="CPF"
+            variant="filled"
+            size="small"
             name="cpf"
-            title="Apenas no números neste campo"
             value={form.cpf}
             onChange={onChange}
-            variant="filled"
-            focusBorderColor="yellow700"
-            _focus={{ color: "white" }}
-            maxLength={14}
-            minLength={11}
+            fullWidth
             required
           />
-        </Stack>
+        </CustomStack>
 
-        <Stack
-          spacing={4}
-          display="flex"
-          align="center"
-          w={smallWidth ? "35%" : "90%"}
-        >
-          <Text as="b" color="white">
+        <CustomStack spacing={2}>
+          <Typography variant="h6" color="white">
             Destinos de interesses
-          </Text>
-          <SelectReact
-            options={countries.map(
-              (country: { name_ptbr: string; code: string }) => {
-                return { label: country.name_ptbr, value: country.code };
-              }
-            )}
-            isMulti
-            onChange={(item: any) => setCountriesForm(item)}
-            components={animatedComponents}
-          />
-          {requiredCountries ? (
-            <CustomRequired>
-              <strong>!</strong> <p>Campo obrigatório.</p>
-            </CustomRequired>
-          ) : (
-            ""
-          )}
-          <SelectReact
-            options={cities.map(
-              (city: { name_ptbr: string; country_code: string }) => {
-                return { label: city.name_ptbr, value: city.country_code };
-              }
-            )}
-            isMulti
-            onChange={(item: any) => setCitiesForm(item)}
-            components={animatedComponents}
-          />
-          {requiredCities ? (
-            <CustomRequired>
-              <strong>!</strong> <p>Campo obrigatório.</p>
-            </CustomRequired>
-          ) : (
-            ""
-          )}
-        </Stack>
+          </Typography>
+          <CustomFormControl variant="filled" fullWidth>
+            <InputLabel>Países</InputLabel>
+            <Select
+              name="countries"
+              value={countriesForm}
+              onChange={handleChangeCountries}
+              MenuProps={MenuProps}
+              multiple
+              required
+            >
+              {countries.map((country: { code: string; name_ptbr: string }) => {
+                return (
+                  <MenuItem key={country.code} value={country.name_ptbr}>
+                    {country.name_ptbr}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </CustomFormControl>
+          <CustomFormControl variant="filled" fullWidth>
+            <InputLabel>Cidades</InputLabel>
+            <Select
+              name="cities"
+              value={citiesForm}
+              onChange={handleChangeCities}
+              MenuProps={MenuProps}
+              multiple
+              required
+            >
+              {cities.map((city: { id: string; name_ptbr: string }) => {
+                return (
+                  <MenuItem key={city.id} value={city.name_ptbr}>
+                    {city.name_ptbr}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </CustomFormControl>
+        </CustomStack>
       </Flex>
-      <Button
-        variant="outline"
-        type={requiredCities || requiredCountries ? "button" : "submit"}
-        borderColor="yellow700"
-        color="white"
-        _hover={{ bg: "yellow700" }}
-        _active={{ bg: "yellow400", borderColor: "yellow400" }}
-      >
+      <Button type="submit" sx={sendButton}>
         Enviar
       </Button>
     </FormStyled>

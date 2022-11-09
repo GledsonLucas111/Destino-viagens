@@ -1,16 +1,20 @@
-import { extendTheme } from "@chakra-ui/react"
+import { createTheme } from "@mui/material";
 
-export const theme = extendTheme({
-  styles: {
-    global: {
-        body: {
-            bg: 'black500'
-        }
-    }
+export const theme = createTheme({
+  palette: {
+    common: {
+      black: "#000",
+      white: "#fff"
+    },
+    primary: {
+      main: "#FFAD10",
+      dark: "#ce8b0c"
+    },
+    secondary: {
+      main: "#fff"
+    },
+    grey: {
+      900: "#171717",
+    },
   },
-  colors: {
-    black500: '#171717',
-    yellow700: '#FFAD10',
-    yellow400: '#ce8b0c'
-  }
 });
